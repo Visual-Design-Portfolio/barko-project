@@ -12,11 +12,12 @@ datasource db {
 }
 
 model User_info {
-  id           String   @id @default(auto()) @map("_id") @db.ObjectId
-  email        String   @unique
-  username     String   @unique
+  id           String         @id @default(auto()) @map("_id") @db.ObjectId
+  email        String         @unique
+  username     String         @unique
   password     String
   registeredAt DateTime
+  portfolio    Portfolio_info @relation(fields: [id], references: [id])
 }
 
 model Portfolio_info {
@@ -27,6 +28,7 @@ model Portfolio_info {
   project        Project[]
   skill          Skill[]
   template       Template[]
+  user           User_info[]
 }
 
 model Template_info {

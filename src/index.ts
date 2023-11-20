@@ -1,15 +1,36 @@
+import express from "express";
 import { PrismaClient } from "@prisma/client";
+import UserRepository from "./repositories/user";
+import { IUserHandler } from "./handlers";
+import UserHandler from "./handlers/user";
+import JWTMiddleware from "./middleware/jwt";
 
-const prisma = new PrismaClient();
+const port = 8080;
 
-async function main() {
-  const post = await prisma.post.create({
-    data: {
-      title: "test post title",
-      body: "test post body",
-    },
-  });
-  console.log(post);
-}
+const app = express();
+const clnt = new PrismaClient();
 
-main();
+const userRepo = new UserRepository(clnt);
+const jwtMiddleware = new JWTMiddleware();
+
+const userHandler: IUserHandler = new UserHandler(userRepo);
+
+app.use(express.json());
+
+app.get("/", jwtMiddleware.auth, (req, res) => {
+  return res.status(200).send("Welcome to LearnHub").end();
+});
+
+const userRouter = express.Router();
+app.use("/user", userRouter);
+userRouter.post("/", userHandler.registration);
+userRouter.get("/:username", userHandler.findByEmail);
+
+const authRouter = express.Router();
+app.use("/auth", authRouter);
+authRouter.get("/me", jwtMiddleware.auth, userHandler.findById);
+authRouter.post("/login", userHandler.login);
+
+app.listen(port, () => {
+  console.log(`Test API is up at ${port}`);
+});
