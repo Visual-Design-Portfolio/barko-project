@@ -1,14 +1,22 @@
-import { mongo } from "mongoose";
+import mongoose from "mongoose";
 
-const mongoose = require("mongoose");
+export interface ISkill {
+  name: string;
+  logo_url: string;
+}
 
-const skillSchema = new mongoose.Schema({
+const skillSchema = new mongoose.Schema<ISkill>({
   name: {
     type: String,
-    require: true,
+    required: true,
   },
   logo_url: {
     type: String,
-    require: true,
+    required: true,
   },
 });
+
+const Skill = mongoose.model("skill", skillSchema);
+
+export default Skill;
+export type ISkillModel = typeof Skill;

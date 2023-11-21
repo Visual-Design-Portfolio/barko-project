@@ -1,5 +1,5 @@
 export interface IUserDTO {
-  id: string;
+  // id: string;
   email: string;
   username: string;
   registeredAt: Date;

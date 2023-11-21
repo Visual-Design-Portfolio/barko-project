@@ -1,11 +1,11 @@
-import { User_info } from "@prisma/client";
 import { ICreateUserDTO, IUserDTO } from "../dto/user";
+import { IUser } from "../schemas/user_info";
 
 export interface IUserRepository {
   create(user: ICreateUserDTO): Promise<IUserExtended>;
-  findByEmail(email: string): Promise<User_info>;
-  findById(id: string): Promise<IUserExtended>;
+  findByEmail(email: string): Promise<IUserExtended | null>;
+  findById(id: string): Promise<IUserExtended | null>;
 }
 
 export interface IUserExtended
-  extends Pick<User_info, "id" | "email" | "username" | "registeredAt"> {}
+  extends Pick<IUser, "email" | "username" | "password" | "registeredAt"> {}
