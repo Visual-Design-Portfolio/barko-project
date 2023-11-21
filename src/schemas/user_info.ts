@@ -1,8 +1,10 @@
 import mongoose from "mongoose";
 import { IUserDTO } from "../dto/user";
 import { Schema, string } from "yup";
+import { ObjectId } from "bson";
 
 export interface IUser {
+  // _id: mongoose.Types.ObjectId;
   email: string;
   username: string;
   password: string;
@@ -11,6 +13,10 @@ export interface IUser {
 }
 
 const userSchema = new mongoose.Schema({
+  // _id: {
+  //   type: mongoose.Types.ObjectId,
+  //   require: true,
+  // },
   email: {
     type: String,
     required: true,

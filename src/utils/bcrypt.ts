@@ -5,5 +5,6 @@ export const hashPassword = (plaintext: string): string => {
   return hashSync(plaintext, salt);
 };
 
-export const verifyPassword = (plaintext: string, hashVal: string): boolean =>
-  compareSync(plaintext, hashVal);
+export const verifyPassword = (plaintext: string, hashVal: string): boolean => {
+  return compareSync(plaintext, hashVal);
+};

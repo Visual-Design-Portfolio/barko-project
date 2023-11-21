@@ -25,7 +25,8 @@ export default class UserHandler implements IUserHandler {
     AuthStatus
   > = async (req, res) => {
     try {
-      const findById = await this.repo.findById(res.locals.user.id);
+      const result = await this.repo.findById(res.locals.user.id);
+      if (result == null) throw new Error("something byId");
 
       return res.status(200).json({ message: "Done" }).end();
     } catch (error) {
@@ -38,9 +39,18 @@ export default class UserHandler implements IUserHandler {
   public findByEmail: RequestHandler<{ email: string }, IUserDTO | IErrorDTO> =
     async (req, res) => {
       try {
-        const findByEmail = await this.repo.findByEmail(req.params.email);
+        const result = await this.repo.findByEmail(req.params.email);
+        if (result == null) throw new Error("something");
 
-        return res.status(200).json({ message: "Done" }).end();
+        return res
+          .status(200)
+          .json({
+            // id: result.id
+            email: result.email,
+            username: result.username,
+            registeredAt: result.registeredAt,
+          })
+          .end();
       } catch (error) {
         console.error(error);
 
@@ -52,9 +62,18 @@ export default class UserHandler implements IUserHandler {
     async (req, res) => {
       const { email, password: plainPassword } = req.body;
       try {
-        const login = await this.repo.findByEmail(email);
+        const result = await this.repo.findByEmail(email);
+        if (result == null) throw new Error("Email not found");
+        const {
+          email: registerdEmail,
+          username: registeredUsername,
+          registeredAt,
+          password: password,
+        } = result;
 
-        if (!verifyPassword(plainPassword, email))
+        console.log(result);
+
+        if (!verifyPassword(plainPassword, password))
           throw new Error("Username or Password is wrong");
 
         const accessToken = sign({ at(_id) {} }, JWT_SECRET, {
@@ -63,11 +82,13 @@ export default class UserHandler implements IUserHandler {
           issuer: "Visual-Portfolio-api",
           subject: "user-credential",
         });
+        console.log(accessToken);
         return res.status(200).json({ accessToken }).end();
       } catch (error) {
-        return res
-          .status(401)
-          .json({ message: "Invalid username or password" });
+        if (error instanceof Error) {
+          return res.status(404).json({ message: error.message });
+        }
+        return res.status(400).json({ message: "Not found" });
       }
     };
 
@@ -83,14 +104,13 @@ export default class UserHandler implements IUserHandler {
 
     if (!emailRegex.test(email) || email.length < 5)
       return res.status(400).json({ message: "email is invalid" });
-    if (typeof username !== "string" || username.length > 3)
+    if (typeof username !== "string" || username.length < 3)
       return res.status(400).json({ message: "username is invalid" });
     if (typeof plainPassword !== "string" || plainPassword.length < 8)
       return res.status(400).json({ message: "password is invalid" });
 
     try {
       const {
-        // _id: registeredId,
         email: registerdEmail,
         username: registeredUsername,
         registeredAt,
@@ -99,18 +119,21 @@ export default class UserHandler implements IUserHandler {
         username,
         password: hashPassword(plainPassword),
       });
+      console.log(email, username, plainPassword);
+      console.log(registerdEmail, registeredUsername);
 
       return res
         .status(201)
         .json({
-          //   _id: registeredId,
           email: registerdEmail,
           username: registeredUsername,
           registeredAt: registeredAt,
+          message: "Register Succuess",
         })
         .end();
     } catch (error) {
-      return res.status(401).json({ message: "Name is invalid" });
+      console.log(error);
+      return res.status(400).json({ message: "Register fail" });
     }
   };
 

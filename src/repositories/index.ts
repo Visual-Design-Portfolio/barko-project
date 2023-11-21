@@ -8,4 +8,4 @@ export interface IUserRepository {
 }
 
 export interface IUserExtended
-  extends Pick<IUser, "email" | "username" | "registeredAt"> {}
+  extends Pick<IUser, "email" | "username" | "password" | "registeredAt"> {}

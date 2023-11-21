@@ -1,15 +1,27 @@
-import express from "express";
+import "dotenv/config";
 import cors from "cors";
+import JWTMiddleware from "./middleware/jwt";
+import express, { Request, Response } from "express";
+import mongoose, { ObjectId } from "mongoose";
 import UserRepository from "./repositories/user";
 import { IUserHandler } from "./handlers";
 import UserHandler from "./handlers/user";
-import JWTMiddleware from "./middleware/jwt";
+import User from "./schemas/user_info";
+import { DATABASE_URL } from "./const";
 
-const port = 8080;
-
+const port = Number(process.env.PORT || 8888);
 const app = express();
+app.use(cors());
 
-const userRepo = new UserRepository();
+if (!DATABASE_URL) throw new Error("Database not found");
+const db = mongoose.connection;
+mongoose.connect(DATABASE_URL);
+db.on("error", console.error.bind(console, "Connection error from mongo"));
+db.once("open", () => {
+  console.log("connect to MongoDB successfully");
+});
+
+const userRepo = new UserRepository(User);
 const jwtMiddleware = new JWTMiddleware();
 
 const userHandler: IUserHandler = new UserHandler(userRepo);
