@@ -1,5 +1,5 @@
 import express from "express";
-import { PrismaClient } from "@prisma/client";
+import cors from "cors";
 import UserRepository from "./repositories/user";
 import { IUserHandler } from "./handlers";
 import UserHandler from "./handlers/user";
@@ -8,14 +8,14 @@ import JWTMiddleware from "./middleware/jwt";
 const port = 8080;
 
 const app = express();
-const clnt = new PrismaClient();
 
-const userRepo = new UserRepository(clnt);
+const userRepo = new UserRepository();
 const jwtMiddleware = new JWTMiddleware();
 
 const userHandler: IUserHandler = new UserHandler(userRepo);
 
 app.use(express.json());
+app.use(cors());
 
 app.get("/", jwtMiddleware.auth, (req, res) => {
   return res.status(200).send("Welcome to LearnHub").end();

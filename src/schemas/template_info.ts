@@ -1,24 +1,32 @@
-import { mongo } from "mongoose";
+import mongoose, { model } from "mongoose";
 
-const mongoose = require("mongoose");
+export interface ITemplate {
+  name: string;
+  url: string;
+  createdAt: Date;
+  updatedAt: Date;
+}
 
-const templateSchema = new mongoose.Schema({
+const templateSchema = new mongoose.Schema<ITemplate>({
   name: {
     type: String,
-    require: true,
+    required: true,
   },
   url: {
     type: String,
-    require: true,
+    required: true,
   },
   createdAt: {
     type: Date,
-    require: true,
+    default: Date.now,
   },
-  updateAt: {
+  updatedAt: {
     type: Date,
-    require: true,
+    default: Date.now,
   },
 });
 
-module.exports = mongoose.model("template_info", templateSchema);
+const Template = mongoose.model("Template", templateSchema);
+
+export default Template;
+export type ITemplateModel = typeof Template;

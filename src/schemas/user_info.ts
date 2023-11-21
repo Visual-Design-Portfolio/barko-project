@@ -1,29 +1,42 @@
-import { mongo } from "mongoose";
+import mongoose from "mongoose";
+import { IUserDTO } from "../dto/user";
+import { Schema, string } from "yup";
 
-const mongoose = require("mongoose");
+export interface IUser {
+  email: string;
+  username: string;
+  password: string;
+  registeredAt: Date;
+  portfolio_info: mongoose.Types.ObjectId[];
+}
 
 const userSchema = new mongoose.Schema({
   email: {
     type: String,
-    require: true,
+    required: true,
+    lowercase: true,
   },
   username: {
     type: String,
-    require: true,
+    required: true,
   },
   password: {
     type: String,
-    require: true,
+    required: true,
   },
   registeredAt: {
-    type: Date.now(),
-    require: true,
+    type: Date,
+    default: Date.now,
   },
-  portfolio_info: {
-    type: mongoose.Schema.Types.ObjectId,
-    require: true,
-    ref: "portfolio_info",
-  },
+  portfolio_info: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "portfolio_info",
+    },
+  ],
 });
 
-module.exports = mongoose.model("user_info", userSchema);
+const User = mongoose.model("User", userSchema);
+
+export default User;
+export type IUserModel = typeof User;

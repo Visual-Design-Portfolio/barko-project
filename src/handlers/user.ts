@@ -8,8 +8,9 @@ import { AuthStatus } from "../middleware/jwt";
 import { hashPassword, verifyPassword } from "../utils/bcrypt";
 import { JwtPayload, sign, verify } from "jsonwebtoken";
 import { JWT_SECRET } from "../const";
-import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library";
 import { IMessageDTO } from "../dto/message";
+import User from "../schemas/user_info";
+import { number, string } from "yup";
 
 export default class UserHandler implements IUserHandler {
   private repo: IUserRepository;
@@ -24,31 +25,22 @@ export default class UserHandler implements IUserHandler {
     AuthStatus
   > = async (req, res) => {
     try {
-      const { registeredAt, ...other } = await this.repo.findById(
-        res.locals.user.id
-      );
+      const findById = await this.repo.findById(res.locals.user.id);
 
-      return res
-        .status(200)
-        .json({ ...other, registeredAt })
-        .end();
+      return res.status(200).json({ message: "Done" }).end();
     } catch (error) {
       console.error(error);
 
-      return res.status(500).json({ message: "Internal Server Error" });
+      return res.status(500).json({ message: "ID not found" });
     }
   };
 
   public findByEmail: RequestHandler<{ email: string }, IUserDTO | IErrorDTO> =
     async (req, res) => {
       try {
-        const { password, registeredAt, ...userInfo } =
-          await this.repo.findByEmail(req.params.email);
+        const findByEmail = await this.repo.findByEmail(req.params.email);
 
-        return res
-          .status(200)
-          .json({ ...userInfo, registeredAt: registeredAt })
-          .end();
+        return res.status(200).json({ message: "Done" }).end();
       } catch (error) {
         console.error(error);
 
@@ -60,12 +52,12 @@ export default class UserHandler implements IUserHandler {
     async (req, res) => {
       const { email, password: plainPassword } = req.body;
       try {
-        const { password, id } = await this.repo.findByEmail(email);
+        const login = await this.repo.findByEmail(email);
 
-        if (!verifyPassword(plainPassword, password))
+        if (!verifyPassword(plainPassword, email))
           throw new Error("Username or Password is wrong");
 
-        const accessToken = sign({ id }, JWT_SECRET, {
+        const accessToken = sign({ at(_id) {} }, JWT_SECRET, {
           algorithm: "HS512",
           expiresIn: "12h",
           issuer: "Visual-Portfolio-api",
@@ -86,19 +78,19 @@ export default class UserHandler implements IUserHandler {
   > = async (req, res) => {
     const { email, username, password: plainPassword } = req.body;
     const emailRegex = new RegExp(
-      /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/
+      /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
     );
 
-    if (!emailRegex.test(email) || email.length > 3)
+    if (!emailRegex.test(email) || email.length < 5)
       return res.status(400).json({ message: "email is invalid" });
     if (typeof username !== "string" || username.length > 3)
       return res.status(400).json({ message: "username is invalid" });
-    if (typeof plainPassword !== "string" || plainPassword.length < 5)
+    if (typeof plainPassword !== "string" || plainPassword.length < 8)
       return res.status(400).json({ message: "password is invalid" });
 
     try {
       const {
-        id: registeredId,
+        // _id: registeredId,
         email: registerdEmail,
         username: registeredUsername,
         registeredAt,
@@ -111,7 +103,7 @@ export default class UserHandler implements IUserHandler {
       return res
         .status(201)
         .json({
-          id: registeredId,
+          //   _id: registeredId,
           email: registerdEmail,
           username: registeredUsername,
           registeredAt: registeredAt,
