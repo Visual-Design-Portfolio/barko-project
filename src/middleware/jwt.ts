@@ -3,7 +3,7 @@ import { JsonWebTokenError, JwtPayload, verify } from "jsonwebtoken";
 import { JWT_SECRET } from "../const";
 
 export interface AuthStatus {
-  user: { id: string };
+  user: { userId: string };
 }
 
 export default class JWTMiddleware {
@@ -17,16 +17,17 @@ export default class JWTMiddleware {
     try {
       const token = req.header("Authorization")!.replace("Bearer ", "").trim();
 
-      const { id } = verify(token, JWT_SECRET) as JwtPayload;
+      const { userId } = verify(token, JWT_SECRET) as JwtPayload;
 
-      console.log(`Found user id in JWT token: ${id}`);
+      console.log(`Found user id in JWT token: ${userId}`);
 
       res.locals = {
         user: {
-          id,
+          userId,
         },
       };
 
+      console.log(`${res.locals.user.userId}`);
       return next();
     } catch (error) {
       console.error(error);

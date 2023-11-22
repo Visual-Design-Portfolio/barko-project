@@ -1,5 +1,7 @@
+import mongoose from "mongoose";
+
 export interface IUserDTO {
-  // id: string;
+  _id: mongoose.Types.ObjectId;
   email: string;
   username: string;
   registeredAt: Date;

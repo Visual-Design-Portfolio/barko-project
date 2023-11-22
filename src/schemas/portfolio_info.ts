@@ -1,6 +1,19 @@
-import mongoose from "mongoose";
+import mongoose, { Types } from "mongoose";
 
-export interface IPortfolio {}
+export interface IPortfolio {
+  _id: mongoose.Types.ObjectId;
+  name: string;
+  ownerName: string;
+  picture: string;
+  createdAt: Date;
+  updatedAt: Date;
+  education: IEducation;
+  workExperience: IWorkExperience;
+  project: IProject;
+  skill: ISkill;
+  template: ITemplate;
+  userInfo: mongoose.Types.ObjectId;
+}
 
 export interface IEducation {
   school: string;
@@ -11,12 +24,12 @@ export interface IEducation {
 }
 
 export interface IWorkExperience {
-  startDate: Date;
-  endDate: Date;
   position: string;
   employeeType: string;
   companyName: string;
   companyLocation: string;
+  startDate: Date;
+  endDate: Date;
 }
 
 export interface IProject {
@@ -40,7 +53,7 @@ export interface ITemplate {
   updateAt: Date;
 }
 
-const portfolioSchma = new mongoose.Schema({
+const portfolioSchma = new mongoose.Schema<IPortfolio>({
   name: String,
   ownerName: String,
   picture: String,
@@ -64,7 +77,6 @@ const portfolioSchma = new mongoose.Schema({
       companyLocation: { type: String, required: true },
       startDate: { type: Date, required: true },
       endDate: { type: Date, required: true },
-      required: true,
     },
   ],
   project: [
@@ -76,13 +88,11 @@ const portfolioSchma = new mongoose.Schema({
       tag: { type: String, required: true },
       linkProject: { type: String, required: true },
       linkGitRepo: { type: String, required: true },
-      required: true,
     },
   ],
   skill: [
     {
       name: String,
-      required: true,
     },
   ],
   template: {
@@ -91,7 +101,7 @@ const portfolioSchma = new mongoose.Schema({
     createdAt: { type: Date, default: Date.now },
     updateAt: { type: Date, default: Date.now },
   },
-  user_info: {
+  userInfo: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "user",
   },

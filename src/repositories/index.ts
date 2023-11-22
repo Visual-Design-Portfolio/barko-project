@@ -1,5 +1,7 @@
+import { ICreatePortfolioDTO } from "../dto/portfolio";
 import { ICreateUserDTO, IUserDTO } from "../dto/user";
-import { IUser } from "../schemas/user_info";
+import { IPortfolio } from "../schemas/portfolio_info";
+import { IUser, IUserModel } from "../schemas/user_info";
 
 export interface IUserRepository {
   create(user: ICreateUserDTO): Promise<IUserExtended>;
@@ -8,4 +10,15 @@ export interface IUserRepository {
 }
 
 export interface IUserExtended
-  extends Pick<IUser, "email" | "username" | "password" | "registeredAt"> {}
+  extends Pick<
+    IUser,
+    "_id" | "email" | "username" | "password" | "registeredAt"
+  > {}
+
+export interface IPortfolioRepository {
+  create(id: string, portfolio: ICreatePortfolioDTO): Promise<IPortfolio>;
+}
+
+export interface IPortfolios extends IPortfolio {
+  User: IUserExtended;
+}
