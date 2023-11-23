@@ -65,8 +65,8 @@ export default class UserHandler implements IUserHandler {
         const {
           _id: userId,
           email: registerdEmail,
-          username: registeredUsername,
-          registeredAt,
+          // username: registeredUsername,
+          // registeredAt,
           password: password,
         } = result;
 

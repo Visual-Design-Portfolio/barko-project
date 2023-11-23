@@ -1,7 +1,6 @@
-import { string } from "yup";
+// import { string } from "yup";
 import { IUserExtended, IUserRepository } from ".";
-import { ICreateUserDTO } from "../dto/user";
-import { IUser, IUserModel } from "../schemas/user_info";
+import { IUserModel } from "../schemas/user_info";
 
 export default class UserRepository implements IUserRepository {
   constructor(private User: IUserModel) {
@@ -11,12 +10,12 @@ export default class UserRepository implements IUserRepository {
   public create: IUserRepository["create"] = async (user) => {
     console.log(user);
 
-    return (await this.User.create({
+    return await this.User.create({
       email: user.email,
       username: user.username,
       password: user.password,
       registeredAt: new Date(),
-    })) as IUser;
+    });
   };
 
   public findByEmail: IUserRepository["findByEmail"] = async (email) => {

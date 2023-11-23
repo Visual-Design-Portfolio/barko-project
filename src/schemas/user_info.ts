@@ -1,8 +1,4 @@
 import mongoose from "mongoose";
-import { IUserDTO } from "../dto/user";
-import { Schema, string } from "yup";
-import { ObjectId } from "bson";
-
 export interface IUser {
   _id: mongoose.Types.ObjectId;
   email: string;
