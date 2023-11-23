@@ -1,8 +1,8 @@
 import "dotenv/config";
 import cors from "cors";
 import JWTMiddleware from "./middleware/jwt";
-import express, { Request, Response } from "express";
-import mongoose, { ObjectId } from "mongoose";
+import express from "express";
+import mongoose from "mongoose";
 import { IPortfolioHandler, IUserHandler } from "./handlers";
 import UserHandler from "./handlers/user";
 import User from "./schemas/user_info";
@@ -47,6 +47,7 @@ userRouter.get("/:email", userHandler.findByEmail);
 const portfolioRouter = express.Router();
 app.use("/portfolio", portfolioRouter);
 portfolioRouter.post("/", jwtMiddleware.auth, portfolioHandler.create);
+portfolioRouter.get("/", portfolioHandler.getAll);
 
 const authRouter = express.Router();
 app.use("/auth", authRouter);

@@ -1,17 +1,16 @@
-import mongoose, { Types } from "mongoose";
+import mongoose from "mongoose";
 
 export interface IPortfolio {
   _id: mongoose.Types.ObjectId;
   name: string;
   ownerName: string;
-  picture: string;
+  picture?: string;
   createdAt: Date;
   updatedAt: Date;
   education: IEducation;
   workExperience: IWorkExperience;
   project: IProject;
   skill: ISkill;
-  template: ITemplate;
   userInfo: mongoose.Types.ObjectId;
 }
 
@@ -33,9 +32,9 @@ export interface IWorkExperience {
 }
 
 export interface IProject {
-  picture: string;
   title: string;
   detail: string;
+  picture?: string;
   category: string;
   tag: string;
   linkProject: string;
@@ -43,20 +42,13 @@ export interface IProject {
 }
 
 export interface ISkill {
-  name: string;
-}
-
-export interface ITemplate {
-  name: string;
-  url: string;
-  createdAt: Date;
-  updateAt: Date;
+  name: string[];
 }
 
 const portfolioSchma = new mongoose.Schema<IPortfolio>({
   name: String,
   ownerName: String,
-  picture: String,
+  picture: { type: String, required: false },
   createdAt: { type: Date, default: Date.now },
   updatedAt: { type: Date, default: Date.now },
   education: [
@@ -83,24 +75,14 @@ const portfolioSchma = new mongoose.Schema<IPortfolio>({
     {
       title: { type: String, required: true },
       detail: { type: String, required: true },
-      picture: { type: String, required: true },
-      category: { type: String, required: true },
-      tag: { type: String, required: true },
+      picture: { type: String, required: false },
+      category: [{ type: String, required: true }],
+      tag: [{ type: String, required: true }],
       linkProject: { type: String, required: true },
       linkGitRepo: { type: String, required: true },
     },
   ],
-  skill: [
-    {
-      name: String,
-    },
-  ],
-  template: {
-    name: { type: String, required: true },
-    url: { type: String, required: true },
-    createdAt: { type: Date, default: Date.now },
-    updateAt: { type: Date, default: Date.now },
-  },
+  skill: [String],
   userInfo: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "user",

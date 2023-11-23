@@ -11,6 +11,23 @@ export default class PortfolioHandler implements IPortfolioHandler {
     this.repo = repo;
   }
 
+  public getAll: RequestHandler<{}, IPortfolioDTO[] | IErrorDTO> = async (
+    req,
+    res
+  ) => {
+    try {
+      const result = await this.repo.getAll();
+
+      return res.status(200).json(result).end();
+    } catch (error) {
+      console.error(error);
+      if (error instanceof URIError)
+        return res.status(400).json({ message: `${error}` });
+
+      res.status(500).json({ message: "Internal server error" }).end;
+    }
+  };
+
   public create: RequestHandler<
     {},
     IPortfolioDTO | IErrorDTO,
@@ -26,7 +43,6 @@ export default class PortfolioHandler implements IPortfolioHandler {
       workExperience,
       project,
       skill,
-      template,
     } = req.body;
 
     if (typeof name !== "string" || name.length === 0)
@@ -42,7 +58,6 @@ export default class PortfolioHandler implements IPortfolioHandler {
       workExperience,
       project,
       skill,
-      template,
     };
 
     // console.log(`${createPortfolioData}`);
@@ -68,7 +83,6 @@ export default class PortfolioHandler implements IPortfolioHandler {
         workExperience: result.workExperience,
         project: result.project,
         skill: result.skill,
-        template: result.template,
         userInfo: result.userInfo,
       };
 

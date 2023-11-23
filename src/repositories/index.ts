@@ -1,7 +1,7 @@
-import { ICreatePortfolioDTO } from "../dto/portfolio";
-import { ICreateUserDTO, IUserDTO } from "../dto/user";
+import { ICreatePortfolioDTO, IPortfolioDTO } from "../dto/portfolio";
+import { ICreateUserDTO } from "../dto/user";
 import { IPortfolio } from "../schemas/portfolio_info";
-import { IUser, IUserModel } from "../schemas/user_info";
+import { IUser } from "../schemas/user_info";
 
 export interface IUserRepository {
   create(user: ICreateUserDTO): Promise<IUserExtended>;
@@ -16,6 +16,7 @@ export interface IUserExtended
   > {}
 
 export interface IPortfolioRepository {
+  getAll(): Promise<IPortfolioDTO[]>;
   create(id: string, portfolio: ICreatePortfolioDTO): Promise<IPortfolio>;
 }
 

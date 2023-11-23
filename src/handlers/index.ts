@@ -21,6 +21,7 @@ export interface IUserHandler {
 }
 
 export interface IPortfolioHandler {
+  getAll: RequestHandler<{}, IPortfolioDTO[] | IErrorDTO>;
   create: RequestHandler<
     {},
     IPortfolioDTO | IErrorDTO,
