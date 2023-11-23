@@ -9,8 +9,6 @@ import { hashPassword, verifyPassword } from "../utils/bcrypt";
 import { JwtPayload, sign, verify } from "jsonwebtoken";
 import { JWT_SECRET } from "../const";
 import { IMessageDTO } from "../dto/message";
-import User from "../schemas/user_info";
-import { number, string } from "yup";
 
 export default class UserHandler implements IUserHandler {
   private repo: IUserRepository;
@@ -25,8 +23,8 @@ export default class UserHandler implements IUserHandler {
     AuthStatus
   > = async (req, res) => {
     try {
-      const result = await this.repo.findById(res.locals.user.id);
-      if (result == null) throw new Error("something byId");
+      const result = await this.repo.findById(res.locals.user.userId);
+      if (result == null) throw new Error("Not found ID");
 
       return res.status(200).json({ message: "Done" }).end();
     } catch (error) {
@@ -40,12 +38,12 @@ export default class UserHandler implements IUserHandler {
     async (req, res) => {
       try {
         const result = await this.repo.findByEmail(req.params.email);
-        if (result == null) throw new Error("something");
+        if (result == null) throw new Error("Not found Email");
 
         return res
           .status(200)
           .json({
-            // id: result.id
+            _id: result._id,
             email: result.email,
             username: result.username,
             registeredAt: result.registeredAt,
@@ -65,18 +63,17 @@ export default class UserHandler implements IUserHandler {
         const result = await this.repo.findByEmail(email);
         if (result == null) throw new Error("Email not found");
         const {
+          _id: userId,
           email: registerdEmail,
           username: registeredUsername,
           registeredAt,
           password: password,
         } = result;
 
-        console.log(result);
-
         if (!verifyPassword(plainPassword, password))
           throw new Error("Username or Password is wrong");
 
-        const accessToken = sign({ at(_id) {} }, JWT_SECRET, {
+        const accessToken = sign({ userId }, JWT_SECRET, {
           algorithm: "HS512",
           expiresIn: "12h",
           issuer: "Visual-Portfolio-api",

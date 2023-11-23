@@ -4,6 +4,7 @@ import { IErrorDTO } from "../dto/error";
 import { ICredentialDTO, ILoginDTO } from "../dto/auth";
 import { IMessageDTO } from "../dto/message";
 import { AuthStatus } from "../middleware/jwt";
+import { ICreatePortfolioDTO, IPortfolioDTO } from "../dto/portfolio";
 
 export interface IUserHandler {
   registration: RequestHandler<{}, IUserDTO | IErrorDTO, ICreateUserDTO>;
@@ -14,6 +15,16 @@ export interface IUserHandler {
     {},
     IUserDTO | IErrorDTO,
     unknown,
+    undefined,
+    AuthStatus
+  >;
+}
+
+export interface IPortfolioHandler {
+  create: RequestHandler<
+    {},
+    IPortfolioDTO | IErrorDTO,
+    ICreatePortfolioDTO,
     undefined,
     AuthStatus
   >;
