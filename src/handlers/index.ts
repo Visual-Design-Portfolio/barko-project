@@ -4,7 +4,16 @@ import { IErrorDTO } from "../dto/error";
 import { ICredentialDTO, ILoginDTO } from "../dto/auth";
 import { IMessageDTO } from "../dto/message";
 import { AuthStatus } from "../middleware/jwt";
-import { ICreatePortfolioDTO, IPortfolioDTO } from "../dto/portfolio";
+import {
+  ICreatePortfolioDTO,
+  IPortfolioDTO,
+  IUpdatePortfolioDTO,
+} from "../dto/portfolio";
+import mongoose from "mongoose";
+
+export interface ID {
+  _id: mongoose.Types.ObjectId;
+}
 
 export interface IUserHandler {
   registration: RequestHandler<{}, IUserDTO | IErrorDTO, ICreateUserDTO>;
@@ -22,6 +31,7 @@ export interface IUserHandler {
 
 export interface IPortfolioHandler {
   getAll: RequestHandler<{}, IPortfolioDTO[] | IErrorDTO>;
+  getById: RequestHandler<ID, IPortfolioDTO | IErrorDTO>;
   create: RequestHandler<
     {},
     IPortfolioDTO | IErrorDTO,
@@ -29,4 +39,18 @@ export interface IPortfolioHandler {
     undefined,
     AuthStatus
   >;
+  // update: RequestHandler<
+  //   ID,
+  //   IPortfolioDTO | string | IErrorDTO,
+  //   IUpdatePortfolioDTO,
+  //   undefined,
+  //   AuthStatus
+  // >;
+  // delete: RequestHandler<
+  //   ID,
+  //   IPortfolioDTO | string | IErrorDTO,
+  //   undefined,
+  //   undefined,
+  //   AuthStatus
+  // >;
 }

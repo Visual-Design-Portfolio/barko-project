@@ -27,7 +27,6 @@ export default class JWTMiddleware {
         },
       };
 
-      console.log(`${res.locals.user.userId}`);
       return next();
     } catch (error) {
       console.error(error);
