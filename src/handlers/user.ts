@@ -30,7 +30,7 @@ export default class UserHandler implements IUserHandler {
     } catch (error) {
       console.error(error);
 
-      return res.status(500).json({ message: "ID not found" });
+      return res.status(404).json({ message: "ID not found" });
     }
   };
 
@@ -65,8 +65,6 @@ export default class UserHandler implements IUserHandler {
         const {
           _id: userId,
           email: registerdEmail,
-          // username: registeredUsername,
-          // registeredAt,
           password: password,
         } = result;
 
@@ -79,13 +77,12 @@ export default class UserHandler implements IUserHandler {
           issuer: "Visual-Portfolio-api",
           subject: "user-credential",
         });
-        console.log(accessToken);
         return res.status(200).json({ accessToken }).end();
       } catch (error) {
         if (error instanceof Error) {
           return res.status(404).json({ message: error.message });
         }
-        return res.status(400).json({ message: "Not found" });
+        return res.status(404).json({ message: "Not found" });
       }
     };
 
@@ -116,8 +113,6 @@ export default class UserHandler implements IUserHandler {
         username,
         password: hashPassword(plainPassword),
       });
-      console.log(email, username, plainPassword);
-      console.log(registerdEmail, registeredUsername);
 
       return res
         .status(201)

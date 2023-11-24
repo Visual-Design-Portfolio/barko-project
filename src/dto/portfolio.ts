@@ -8,6 +8,8 @@ import {
 
 export interface IPortfolioDTO extends IPortfolio {}
 
+export interface IGetPortfolioDTO extends Pick<IPortfolio, "_id"> {}
+
 export interface ICreatePortfolioDTO {
   name: string;
   ownerName: string;
@@ -18,4 +20,12 @@ export interface ICreatePortfolioDTO {
   skill: ISkill;
 }
 
-// export interface IUpdateContentDTO extends IPortfolio {}
+export interface IUpdatePortfolioDTO {
+  name: string;
+  ownerName: string;
+  picture?: string;
+  education: IEducation;
+  workExperience: IWorkExperience;
+  project: IProject;
+  skill: ISkill;
+}
