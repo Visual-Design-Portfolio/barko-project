@@ -9,6 +9,7 @@ import { hashPassword, verifyPassword } from "../utils/bcrypt";
 import { JwtPayload, sign, verify } from "jsonwebtoken";
 import { JWT_SECRET } from "../const";
 import { IMessageDTO } from "../dto/message";
+import { IPortfolioDTO } from "../dto/portfolio";
 
 export default class UserHandler implements IUserHandler {
   private repo: IUserRepository;
@@ -124,7 +125,6 @@ export default class UserHandler implements IUserHandler {
         })
         .end();
     } catch (error) {
-      console.log(error);
       return res.status(400).json({ message: "Register fail" });
     }
   };

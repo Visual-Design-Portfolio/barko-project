@@ -5,34 +5,37 @@ export interface IUser {
   username: string;
   password: string;
   registeredAt: Date;
-  portfolio_info: mongoose.Types.ObjectId[];
+  portfolios: mongoose.Types.ObjectId[];
 }
 
-const userSchema = new mongoose.Schema({
-  email: {
-    type: String,
-    required: true,
-    lowercase: true,
-  },
-  username: {
-    type: String,
-    required: true,
-  },
-  password: {
-    type: String,
-    required: true,
-  },
-  registeredAt: {
-    type: Date,
-    default: Date.now,
-  },
-  portfolio_info: [
-    {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "portfolio_info",
+const userSchema = new mongoose.Schema(
+  {
+    email: {
+      type: String,
+      required: true,
+      lowercase: true,
     },
-  ],
-});
+    username: {
+      type: String,
+      required: true,
+    },
+    password: {
+      type: String,
+      required: true,
+    },
+    registeredAt: {
+      type: Date,
+      default: Date.now,
+    },
+    portfolios: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Portfolio",
+      },
+    ],
+  },
+  { timestamps: true }
+);
 
 const User = mongoose.model("User", userSchema);
 

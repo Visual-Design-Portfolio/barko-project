@@ -35,18 +35,18 @@ const userRouter = express.Router();
 app.use("/user", userRouter);
 userRouter.post("/", userHandler.registration);
 userRouter.get("/:email", userHandler.findByEmail);
+// userRouter.get("", userHandler.findById);
 
 const portfolioRouter = express.Router();
 app.use("/portfolio", portfolioRouter);
 portfolioRouter.post("/", jwtMiddleware.auth, portfolioHandler.create);
-portfolioRouter.get("/", portfolioHandler.getAll);
-portfolioRouter.get("/:_id", portfolioHandler.getById);
-// portfolioRouter.patch("/:_id", jwtMiddleware.auth, portfolioHandler.update);
-// portfolioRouter.delete("/:id", jwtMiddleware.auth, portfolioHandler.delete);
+portfolioRouter.get("/", portfolioHandler.getPortfolioAll);
+portfolioRouter.get("/:_id", portfolioHandler.getPortfolioById);
+portfolioRouter.patch("/:_id", jwtMiddleware.auth, portfolioHandler.update);
+portfolioRouter.delete("/:_id", jwtMiddleware.auth, portfolioHandler.delete);
 
 const authRouter = express.Router();
 app.use("/auth", authRouter);
-authRouter.get("/me", jwtMiddleware.auth, userHandler.findById);
 authRouter.post("/login", userHandler.login);
 
 ConnectDB()

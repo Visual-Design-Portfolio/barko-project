@@ -20,18 +20,18 @@ export interface IUserHandler {
   login: RequestHandler<{}, ICredentialDTO | IErrorDTO, ILoginDTO>;
   logout: RequestHandler<{}, IMessageDTO, undefined, undefined, AuthStatus>;
   findByEmail: RequestHandler<{ email: string }, IUserDTO | IErrorDTO>;
-  findById: RequestHandler<
-    {},
-    IUserDTO | IErrorDTO,
-    unknown,
-    undefined,
-    AuthStatus
-  >;
+  // findById: RequestHandler<
+  //   {},
+  //   IUserDTO | IErrorDTO,
+  //   unknown,
+  //   undefined,
+  //   AuthStatus
+  // >;
 }
 
 export interface IPortfolioHandler {
-  getAll: RequestHandler<{}, IPortfolioDTO[] | IErrorDTO>;
-  getById: RequestHandler<ID, IPortfolioDTO | IErrorDTO>;
+  getPortfolioAll: RequestHandler<{}, IPortfolioDTO[] | IErrorDTO>;
+  getPortfolioById: RequestHandler<ID, IPortfolioDTO | IErrorDTO>;
   create: RequestHandler<
     {},
     IPortfolioDTO | IErrorDTO,
@@ -39,18 +39,18 @@ export interface IPortfolioHandler {
     undefined,
     AuthStatus
   >;
-  // update: RequestHandler<
-  //   ID,
-  //   IPortfolioDTO | string | IErrorDTO,
-  //   IUpdatePortfolioDTO,
-  //   undefined,
-  //   AuthStatus
-  // >;
-  // delete: RequestHandler<
-  //   ID,
-  //   IPortfolioDTO | string | IErrorDTO,
-  //   undefined,
-  //   undefined,
-  //   AuthStatus
-  // >;
+  update: RequestHandler<
+    ID,
+    IPortfolioDTO | IErrorDTO,
+    IUpdatePortfolioDTO,
+    undefined,
+    AuthStatus
+  >;
+  delete: RequestHandler<
+    ID,
+    IPortfolioDTO | string | IErrorDTO,
+    undefined,
+    undefined,
+    AuthStatus
+  >;
 }

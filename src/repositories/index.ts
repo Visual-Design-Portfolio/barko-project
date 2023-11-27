@@ -11,6 +11,7 @@ export interface IUserRepository {
   create(user: ICreateUserDTO): Promise<ICreateUser>;
   findByEmail(email: string): Promise<IFindEmailForLogin | null>;
   findById(id: string): Promise<IFindUser | null>;
+  // findByUser(userId: string): Promise<IUserInfo | null>;
 }
 
 export interface IUserExtended
@@ -20,24 +21,23 @@ export interface IUserExtended
   > {}
 
 export interface IUserInfo extends Omit<IUser, "password"> {}
-export interface ICreateUser extends Omit<IUser, "_id" | "registerdAt"> {}
+export interface ICreateUser extends Omit<IUser, "id" | "registerdAt"> {}
 export interface IFindUser extends Omit<IUser, "password"> {}
-export interface IFindEmailForLogin extends Omit<IUser, "portfolio_info"> {}
+export interface IFindEmailForLogin extends Omit<IUser, "portfolios"> {}
 
 export interface IPortfolioRepository {
-  getAll(): Promise<IPortfolioDTO[]>;
-  getById(_id: IGetPortfolioDTO): Promise<IGetPortfolio | null>;
-  create(id: string, portfolio: ICreatePortfolioDTO): Promise<IPortfolioDTO>;
-  // update(
-  //   _id: string,
-  //   portfolio: IUpdatePortfolioDTO
-  // ): Promise<IPortfolioDTO | null>;
-  // delete(id: string): Promise<IPortfolioDTO | null>;
+  getPortfolioAll(): Promise<IPortfolioDTO[]>;
+  getPortfolioById(_id: IGetPortfolioDTO): Promise<IPortfolioDTO | null>;
+  create(
+    ownerId: string,
+    portfolio: ICreatePortfolioDTO
+  ): Promise<IPortfolioDTO>;
+  update(
+    _id: string,
+    portfolio: IUpdatePortfolioDTO
+  ): Promise<IPortfolioDTO | null>;
+  delete(_id: string): Promise<IPortfolioDTO>;
 }
 
 export interface IGetPortfolio extends IPortfolioDTO {}
-
-// export interface ICreatePortfolio
-//   extends Omit<IPortfolio, "_id" | "createdAt" | "updatedAt"> {}
-// export interface IUpdatePortfolio
-//   extends Omit<IPortfolio, "_id" | "createdAt" | "updatedAt"> {}
+export interface IUpdatePortfolio extends IUpdatePortfolioDTO {}

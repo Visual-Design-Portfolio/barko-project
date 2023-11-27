@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-
+import User from "./user_info";
 export interface IPortfolio {
   _id: mongoose.Types.ObjectId;
   name: string;
@@ -7,11 +7,11 @@ export interface IPortfolio {
   picture?: string;
   createdAt: Date;
   updatedAt: Date;
-  education: IEducation;
-  workExperience: IWorkExperience;
-  project: IProject;
-  skill: ISkill;
-  userInfo: mongoose.Types.ObjectId;
+  education: IEducation[];
+  workExperience: IWorkExperience[];
+  project: IProject[];
+  skill: ISkill[];
+  userId: mongoose.Types.ObjectId;
 }
 
 export interface IEducation {
@@ -53,39 +53,40 @@ const portfolioSchma = new mongoose.Schema<IPortfolio>({
   updatedAt: { type: Date, default: Date.now },
   education: [
     {
-      school: { type: String, required: true },
-      degree: { type: String, required: true },
-      major: { type: String, required: true },
-      startDate: { type: Date, required: true },
-      endDate: { type: Date, required: true },
+      school: { type: String, required: false },
+      degree: { type: String, required: false },
+      major: { type: String, required: false },
+      startDate: { type: Date, required: false },
+      endDate: { type: Date, required: false },
     },
   ],
 
   workExperience: [
     {
-      position: { type: String, required: true },
-      employeeType: { type: String, required: true },
-      companyName: { type: String, required: true },
-      companyLocation: { type: String, required: true },
-      startDate: { type: Date, required: true },
-      endDate: { type: Date, required: true },
+      position: { type: String, required: false },
+      employeeType: { type: String, required: false },
+      companyName: { type: String, required: false },
+      companyLocation: { type: String, required: false },
+      startDate: { type: Date, required: false },
+      endDate: { type: Date, required: false },
     },
   ],
   project: [
     {
-      title: { type: String, required: true },
-      detail: { type: String, required: true },
+      title: { type: String, required: false },
+      detail: { type: String, required: false },
       picture: { type: String, required: false },
       category: [String],
       tag: [String],
-      linkProject: { type: String, required: true },
-      linkGitRepo: { type: String, required: true },
+      linkProject: { type: String, required: false },
+      linkGitRepo: { type: String, required: false },
     },
   ],
   skill: [String],
-  userInfo: {
+  userId: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "user",
+    ref: "User",
+    required: true,
   },
 });
 

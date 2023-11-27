@@ -1,8 +1,9 @@
-// import { string } from "yup";
+import { string } from "yup";
 import {
   IFindEmailForLogin,
   IFindUser,
   IUserExtended,
+  IUserInfo,
   IUserRepository,
 } from ".";
 import { IUserModel } from "../schemas/user_info";
@@ -28,10 +29,18 @@ export default class UserRepository implements IUserRepository {
       .exec();
   };
 
-  public findById: IUserRepository["findById"] = async (id) => {
-    return await this.User.findById(id)
+  public findById: IUserRepository["findById"] = async (_id) => {
+    return await this.User.findById(_id)
       .select("-registerdAt")
       .lean<IFindUser>()
       .exec();
   };
+
+  // public findByUser: IUserRepository["findByUser"] = async (userId) => {
+  //   const user = await this.User.findById(userId)
+  //     .select("-registeredAt")
+  //     .lean<IFindUser>()
+  //     .exec();
+  //   return user;
+  // };
 }
