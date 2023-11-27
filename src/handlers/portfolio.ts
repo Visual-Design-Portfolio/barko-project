@@ -8,6 +8,8 @@ import {
 } from "../dto/portfolio";
 import { AuthStatus } from "../middleware/jwt";
 import { IPortfolioRepository } from "../repositories";
+import mongoose, { Error } from "mongoose";
+import { object } from "yup";
 
 export default class PortfolioHandler implements IPortfolioHandler {
   private repo: IPortfolioRepository;
@@ -15,38 +17,34 @@ export default class PortfolioHandler implements IPortfolioHandler {
     this.repo = repo;
   }
 
-  public getAll: RequestHandler<{}, IPortfolioDTO[] | IErrorDTO> = async (
-    req,
-    res
-  ) => {
-    try {
-      const result = await this.repo.getAll();
+  public getPortfolioAll: RequestHandler<{}, IPortfolioDTO[] | IErrorDTO> =
+    async (req, res) => {
+      try {
+        const result = await this.repo.getPortfolioAll();
 
-      return res.status(200).json(result).end();
-    } catch (error) {
-      console.error(error);
-      if (error instanceof URIError)
-        return res.status(400).json({ message: `${error}` });
+        return res.status(200).json(result).end();
+      } catch (error) {
+        console.error(error);
+        if (error instanceof URIError)
+          return res.status(400).json({ message: `${error}` });
 
-      res.status(500).json({ message: "Internal server error" }).end;
-    }
-  };
+        res.status(500).json({ message: "Internal server error" }).end;
+      }
+    };
 
-  public getById: RequestHandler<ID, IPortfolioDTO | IErrorDTO> = async (
-    req,
-    res
-  ) => {
-    try {
-      const result = await this.repo.getById(req.params._id);
-      if (result === null) throw new Error("Not found portfolio ID");
+  public getPortfolioById: RequestHandler<ID, IPortfolioDTO | IErrorDTO> =
+    async (req, res) => {
+      try {
+        const result = await this.repo.getPortfolioById(req.params._id);
+        if (result === null) throw new Error("Not found portfolio ID");
 
-      return res.status(200).json(result).end();
-    } catch (error) {
-      console.error(error);
+        return res.status(200).json(result).end();
+      } catch (error) {
+        console.error(error);
 
-      return res.status(404).json({ message: "Portfolio not found" });
-    }
-  };
+        return res.status(404).json({ message: "Portfolio not found" });
+      }
+    };
 
   public create: RequestHandler<
     {},
@@ -97,7 +95,7 @@ export default class PortfolioHandler implements IPortfolioHandler {
         workExperience: result.workExperience,
         project: result.project,
         skill: result.skill,
-        userInfo: result.userInfo,
+        userId: result.userId,
       };
 
       return res.status(201).json(returnResult).end();
@@ -110,99 +108,115 @@ export default class PortfolioHandler implements IPortfolioHandler {
     }
   };
 
-  // public update: RequestHandler<
-  //   ID,
-  //   IPortfolioDTO | IErrorDTO,
-  //   IUpdatePortfolioDTO,
-  //   undefined,
-  //   AuthStatus
-  // > = async (req, res) => {
-  //   const {
-  //     name,
-  //     ownerName,
-  //     picture,
-  //     education,
-  //     workExperience,
-  //     project,
-  //     skill,
-  //   } = req.body;
+  public update: RequestHandler<
+    ID,
+    IPortfolioDTO | IErrorDTO,
+    IUpdatePortfolioDTO,
+    undefined,
+    AuthStatus
+  > = async (req, res) => {
+    try {
+      const p = await this.repo.getPortfolioById(req.params._id);
+      if (
+        !p ||
+        (p.userId && p.userId.toString("hex") !== res.locals.user.userId)
+      ) {
+        return res
+          .status(403)
+          .json({ message: "You're not the owner of this Portfolio" })
+          .end();
+      }
 
-  //   if (typeof name !== "string" || name.length === 0)
-  //     return res.status(400).json({ message: "Name is invalid" });
-  //   if (typeof ownerName !== "string" || ownerName.length === 0)
-  //     return res.status(400).json({ message: "ownerName is invalid" });
+      const {
+        name,
+        ownerName,
+        picture,
+        education,
+        workExperience,
+        project,
+        skill,
+      } = req.body;
 
-  //   const updatePortfolioData = {
-  //     name,
-  //     ownerName,
-  //     picture,
-  //     education,
-  //     workExperience,
-  //     project,
-  //     skill,
-  //   };
-  //   console.log(updatePortfolioData);
+      if (typeof name !== "string" || name.length === 0)
+        return res.status(400).json({ message: "Name is invalid" });
+      if (typeof ownerName !== "string" || ownerName.length === 0)
+        return res.status(400).json({ message: "ownerName is invalid" });
 
-  //   try {
-  //     const result = await this.repo.update(
-  //       res.locals.user.userId,
-  //       updatePortfolioData
-  //     );
-  //     console.log(result);
-  //     if (result === null) throw new Error("Not found ID");
+      const updatePortfolioData = {
+        name,
+        ownerName,
+        picture,
+        education,
+        workExperience,
+        project,
+        skill,
+      };
 
-  //     const returnResult: IPortfolioDTO = {
-  //       _id: result._id._id,
-  //       name: result.name,
-  //       ownerName: result.ownerName,
-  //       picture: result.picture,
-  //       createdAt: result.createdAt,
-  //       updatedAt: result.updatedAt,
-  //       education: result.education,
-  //       workExperience: result.workExperience,
-  //       project: result.project,
-  //       skill: result.skill,
-  //       userInfo: result.userInfo,
-  //     };
-  //     console.log(returnResult);
+      const objectId = String(req.params._id);
+      const updateData = await this.repo.update(objectId, updatePortfolioData);
+      if (updateData) {
+        const returnResult: IPortfolioDTO = {
+          _id: updateData._id,
+          name: updateData.name,
+          ownerName: updateData.ownerName,
+          picture: updateData.picture,
+          createdAt: updateData.createdAt,
+          updatedAt: updateData.updatedAt,
+          education: updateData.education,
+          workExperience: updateData.workExperience,
+          project: updateData.project,
+          skill: updateData.skill,
+          userId: updateData.userId,
+        };
 
-  //     return res.status(201).json(returnResult).end();
-  //   } catch (error) {
-  //     if (error instanceof URIError)
-  //       return res.status(400).json({ message: `${error}` });
+        return res.status(200).json(returnResult).end();
+      }
+    } catch (error) {
+      if (error instanceof URIError)
+        return res
+          .status(400)
+          .json({ message: `${error}` })
+          .end();
+    }
+  };
 
-  //     return res
-  //       .status(400)
-  //       .json({ message: `${error}` })
-  //       .end();
-  //   }
-  // };
+  public delete: RequestHandler<
+    ID,
+    IPortfolioDTO | string | IErrorDTO,
+    undefined,
+    undefined,
+    AuthStatus
+  > = async (req, res) => {
+    try {
+      const p = await this.repo.getPortfolioById(req.params._id);
 
-  // public delete: RequestHandler<
-  //   ID,
-  //   IPortfolioDTO | string | IErrorDTO,
-  //   undefined,
-  //   undefined,
-  //   AuthStatus
-  // > = async (req, res) => {
-  //   try {
-  //     const { userInfo._id } = await this.repo.getById(req.params._id);
+      if (
+        !p ||
+        !p.userId ||
+        p?.userId.toString("hex") !== res.locals.user.userId
+      ) {
+        return res
+          .status(403)
+          .json({ message: "You're not the owner of this Portfolio" })
+          .end();
+      }
 
-  //     if (userInfo._id !== res.locals.user.userId)
-  //       return res
-  //         .status(403)
-  //         .json({ message: "You're not a owner this portfolio" })
-  //         .end();
+      const result = await this.repo.delete(String(req.params._id));
+      if (
+        !result ||
+        !result.userId ||
+        result?.userId.toString("hex") !== res.locals.user.userId
+      ) {
+        return res
+          .status(404)
+          .json({ message: "Can't delete because portfolio not found" })
+          .end();
+      }
+      return res.status(200).json(result).end();
+    } catch (error) {
+      console.error(error);
+    }
 
-  //     const result = await this.repo.delete(req.params._id);
-  //     return res.status(200).json(result).end();
-  //   } catch (error) {
-  //     if (error instanceof URIError)
-  //       return res.status(400).json({ message: `${error}` });
-
-  //     res
-  //       .status(404)
-  //       .json({ message: "Can't delete because portfolio not found" }).end;
-  //   }
-  // };
+    return res.status(500).json({ message: "Internal server error" }).end;
+  };
 }

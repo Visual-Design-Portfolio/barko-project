@@ -1,3 +1,4 @@
+import mongoose from "mongoose";
 import {
   IEducation,
   IPortfolio,
@@ -5,6 +6,7 @@ import {
   ISkill,
   IWorkExperience,
 } from "../schemas/portfolio_info";
+import { IUpdatePortfolio, IUserInfo } from "../repositories";
 
 export interface IPortfolioDTO extends IPortfolio {}
 

@@ -16,6 +16,9 @@ export default class JWTMiddleware {
   ) => {
     try {
       const token = req.header("Authorization")!.replace("Bearer ", "").trim();
+      if (!token) {
+        return res.status(401).json({});
+      }
 
       const { userId } = verify(token, JWT_SECRET) as JwtPayload;
 
