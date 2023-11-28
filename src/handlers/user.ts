@@ -10,12 +10,15 @@ import { JwtPayload, sign, verify } from "jsonwebtoken";
 import { JWT_SECRET } from "../const";
 import { IMessageDTO } from "../dto/message";
 import { IPortfolioDTO } from "../dto/portfolio";
+import User, { UpdatePortfolioRequest } from "../schemas/user_info";
+import { Model } from "mongoose";
 
 export default class UserHandler implements IUserHandler {
   private repo: IUserRepository;
   constructor(repo: IUserRepository) {
     this.repo = repo;
   }
+
   public findById: RequestHandler<
     {},
     IUserDTO | IErrorDTO,
@@ -56,6 +59,26 @@ export default class UserHandler implements IUserHandler {
         return res.status(404).json({ message: "User not found" });
       }
     };
+
+  public updatePortfolio: RequestHandler<
+    { userId: string; portfolioId: string },
+    IUserDTO | IErrorDTO,
+    undefined,
+    { userId: string },
+    AuthStatus
+  > = async (req, res) => {
+    const { userId, portfolioId } = req.params;
+
+    try {
+      const result = await this.repo.updatePortfolio(userId, portfolioId);
+      if (result == null) throw new Error("Not found ID");
+
+      return res.status(200).json({ message: "Done" }).end();
+    } catch (error) {
+      console.error(error);
+      return res.status(404).json({ message: "ID not found" });
+    }
+  };
 
   public login: RequestHandler<{}, ICredentialDTO | IErrorDTO, ILoginDTO> =
     async (req, res) => {

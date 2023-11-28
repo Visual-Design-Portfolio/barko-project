@@ -35,13 +35,13 @@ const userRouter = express.Router();
 app.use("/user", userRouter);
 userRouter.post("/", userHandler.registration);
 userRouter.get("/:email", userHandler.findByEmail);
-// userRouter.get("", userHandler.findById);
+userRouter.get("/find/:_id", userHandler.findById);
 
 const portfolioRouter = express.Router();
 app.use("/portfolio", portfolioRouter);
-portfolioRouter.post("/", jwtMiddleware.auth, portfolioHandler.create);
 portfolioRouter.get("/", portfolioHandler.getPortfolioAll);
 portfolioRouter.get("/:_id", portfolioHandler.getPortfolioById);
+portfolioRouter.post("/", jwtMiddleware.auth, portfolioHandler.create);
 portfolioRouter.patch("/:_id", jwtMiddleware.auth, portfolioHandler.update);
 portfolioRouter.delete("/:_id", jwtMiddleware.auth, portfolioHandler.delete);
 

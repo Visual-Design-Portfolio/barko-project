@@ -6,7 +6,8 @@ import {
   IUserInfo,
   IUserRepository,
 } from ".";
-import { IUserModel } from "../schemas/user_info";
+import User, { IUser, IUserModel } from "../schemas/user_info";
+import { Types } from "mongoose";
 
 export default class UserRepository implements IUserRepository {
   constructor(private User: IUserModel) {
@@ -32,15 +33,31 @@ export default class UserRepository implements IUserRepository {
   public findById: IUserRepository["findById"] = async (_id) => {
     return await this.User.findById(_id)
       .select("-registerdAt")
+      .populate("portfolios", "portfolio")
       .lean<IFindUser>()
       .exec();
   };
 
-  // public findByUser: IUserRepository["findByUser"] = async (userId) => {
-  //   const user = await this.User.findById(userId)
-  //     .select("-registeredAt")
-  //     .lean<IFindUser>()
-  //     .exec();
-  //   return user;
-  // };
+  public findByUser: IUserRepository["findByUser"] = async (userId) => {
+    const user = await this.User.findById(userId)
+      .select("-registeredAt")
+      .lean<IFindUser>()
+      .exec();
+    return user;
+  };
+
+  public updatePortfolio: IUserRepository["updatePortfolio"] = async (
+    userId,
+    portfolioId
+  ) => {
+    const result = await this.User.findById(userId);
+
+    if (result) {
+      const newPortfolioId = new Types.ObjectId(portfolioId);
+      result.portfolios = [...(result.portfolios || []), newPortfolioId];
+      result.save;
+    }
+
+    return result;
+  };
 }
