@@ -26,7 +26,7 @@ export default class PortfolioRepository implements IPortfolioRepository {
     return result;
   };
 
-  public create: IPortfolioRepository["create"] = async (id, portfolio) => {
+  public create: IPortfolioRepository["create"] = async (_id, portfolio) => {
     return await this.Portfolio.create({
       name: portfolio.name,
       ownerName: portfolio.ownerName,
@@ -35,7 +35,7 @@ export default class PortfolioRepository implements IPortfolioRepository {
       workExperience: portfolio.workExperience,
       project: portfolio.project,
       skill: portfolio.skill,
-      userId: id,
+      userId: _id,
     });
   };
 

@@ -20,10 +20,25 @@ export interface IUserHandler {
   login: RequestHandler<{}, ICredentialDTO | IErrorDTO, ILoginDTO>;
   logout: RequestHandler<{}, IMessageDTO, undefined, undefined, AuthStatus>;
   findByEmail: RequestHandler<{ email: string }, IUserDTO | IErrorDTO>;
-  // findById: RequestHandler<
-  //   {},
+  findById: RequestHandler<
+    { _id: string },
+    IUserDTO | IErrorDTO,
+    undefined,
+    undefined,
+    AuthStatus
+  >;
+  updatePortfolio: RequestHandler<
+    { userId: string; portfolioId: string },
+    IUserDTO | IErrorDTO,
+    undefined,
+    { userId: string },
+    AuthStatus
+  >;
+
+  // findUserWithPortfolios: RequestHandler<
+  //   { portfolios: string },
   //   IUserDTO | IErrorDTO,
-  //   unknown,
+  //   undefined,
   //   undefined,
   //   AuthStatus
   // >;
@@ -32,6 +47,13 @@ export interface IUserHandler {
 export interface IPortfolioHandler {
   getPortfolioAll: RequestHandler<{}, IPortfolioDTO[] | IErrorDTO>;
   getPortfolioById: RequestHandler<ID, IPortfolioDTO | IErrorDTO>;
+  // getPortfolioWithUser: RequestHandler<
+  //   { userId: string },
+  //   IPortfolioDTO | IErrorDTO,
+  //   undefined,
+  //   undefined,
+  //   AuthStatus
+  // >;
   create: RequestHandler<
     {},
     IPortfolioDTO | IErrorDTO,

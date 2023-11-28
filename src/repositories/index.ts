@@ -5,13 +5,17 @@ import {
   IUpdatePortfolioDTO,
 } from "../dto/portfolio";
 import { ICreateUserDTO } from "../dto/user";
-import { IUser } from "../schemas/user_info";
+import { IUser, IUserModel } from "../schemas/user_info";
 
 export interface IUserRepository {
   create(user: ICreateUserDTO): Promise<ICreateUser>;
   findByEmail(email: string): Promise<IFindEmailForLogin | null>;
-  findById(id: string): Promise<IFindUser | null>;
-  // findByUser(userId: string): Promise<IUserInfo | null>;
+  findById(_id: string): Promise<IFindUser | null>;
+  findByUser(userId: string): Promise<IUserInfo | null>;
+  updatePortfolio(
+    userId: string,
+    portfolioId: string
+  ): Promise<IUserInfo | null>;
 }
 
 export interface IUserExtended

@@ -8,6 +8,10 @@ export interface IUser {
   portfolios: mongoose.Types.ObjectId[];
 }
 
+export interface UpdatePortfolioRequest {
+  userId: string;
+}
+
 const userSchema = new mongoose.Schema(
   {
     email: {
