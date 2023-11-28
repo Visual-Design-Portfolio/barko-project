@@ -31,7 +31,7 @@ app.get("/", jwtMiddleware.auth, (req, res) => {
   return res.status(200).send("Welcome to Visual design portfolio").end();
 });
 
-// for test push github action
+// for test github action
 const userRouter = express.Router();
 app.use("/user", userRouter);
 userRouter.post("/", userHandler.registration);
