@@ -21,12 +21,14 @@ export default class PortfolioHandler implements IPortfolioHandler {
   public getPortfolioAll: RequestHandler<{}, IPortfolioDTO[] | IErrorDTO> =
     async (req, res) => {
       try {
+        const portfolioUser = await this.repo.getPortfolioAll();
+        return res.status(200).json(portfolioUser).end();
       } catch (error) {
         console.error(error);
         if (error instanceof URIError)
           return res.status(400).json({ message: `${error}` });
 
-        res.status(500).json({ message: "Internal server error" }).end;
+        res.status(500).json({ message: "Unauthorized access" }).end;
       }
     };
 
