@@ -40,6 +40,11 @@ userRouter.get("/find/:_id", userHandler.findById);
 const portfolioRouter = express.Router();
 app.use("/portfolio", portfolioRouter);
 portfolioRouter.get("/", portfolioHandler.getPortfolioAll);
+portfolioRouter.get(
+  "/me",
+  jwtMiddleware.auth,
+  portfolioHandler.getPortfolioAll
+);
 portfolioRouter.get("/:_id", portfolioHandler.getPortfolioById);
 portfolioRouter.post("/", jwtMiddleware.auth, portfolioHandler.create);
 portfolioRouter.patch("/:_id", jwtMiddleware.auth, portfolioHandler.update);
