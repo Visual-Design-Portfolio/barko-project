@@ -6,7 +6,6 @@ import {
   ISkill,
   IWorkExperience,
 } from "../schemas/portfolio_info";
-import { IUpdatePortfolio, IUserInfo } from "../repositories";
 
 export interface IPortfolioDTO extends IPortfolio {}
 

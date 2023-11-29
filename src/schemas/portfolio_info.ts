@@ -1,5 +1,4 @@
 import mongoose from "mongoose";
-import User from "./user_info";
 export interface IPortfolio {
   _id: mongoose.Types.ObjectId;
   name: string;

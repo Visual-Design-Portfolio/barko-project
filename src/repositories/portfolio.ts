@@ -1,6 +1,6 @@
 import { string } from "yup";
 import { IPortfolioRepository } from ".";
-import { IPortfolio, IPortfolioModel } from "../schemas/portfolio_info";
+import { IPortfolioModel } from "../schemas/portfolio_info";
 import { IPortfolioDTO } from "../dto/portfolio";
 import mongoose, { Error } from "mongoose";
 
@@ -36,6 +36,7 @@ export default class PortfolioRepository implements IPortfolioRepository {
       project: portfolio.project,
       skill: portfolio.skill,
       userId: _id,
+      // userEmail: newPortfolio.userEmail,
     });
   };
 

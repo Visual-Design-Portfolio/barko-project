@@ -10,6 +10,7 @@ import { AuthStatus } from "../middleware/jwt";
 import { IPortfolioRepository } from "../repositories";
 import mongoose, { Error } from "mongoose";
 import { object } from "yup";
+import User from "../schemas/user_info";
 
 export default class PortfolioHandler implements IPortfolioHandler {
   private repo: IPortfolioRepository;
@@ -20,9 +21,6 @@ export default class PortfolioHandler implements IPortfolioHandler {
   public getPortfolioAll: RequestHandler<{}, IPortfolioDTO[] | IErrorDTO> =
     async (req, res) => {
       try {
-        const result = await this.repo.getPortfolioAll();
-
-        return res.status(200).json(result).end();
       } catch (error) {
         console.error(error);
         if (error instanceof URIError)
@@ -61,6 +59,7 @@ export default class PortfolioHandler implements IPortfolioHandler {
       workExperience,
       project,
       skill,
+      // userEmail,
     } = req.body;
 
     if (typeof name !== "string" || name.length === 0)
@@ -76,6 +75,7 @@ export default class PortfolioHandler implements IPortfolioHandler {
       workExperience,
       project,
       skill,
+      // userEmail,
     };
 
     try {
@@ -96,6 +96,7 @@ export default class PortfolioHandler implements IPortfolioHandler {
         project: result.project,
         skill: result.skill,
         userId: result.userId,
+        // userEmail: result.userEmail,
       };
 
       return res.status(201).json(returnResult).end();
@@ -167,6 +168,7 @@ export default class PortfolioHandler implements IPortfolioHandler {
           project: updateData.project,
           skill: updateData.skill,
           userId: updateData.userId,
+          // userEmail: updateData.userEmail,
         };
 
         return res.status(200).json(returnResult).end();
