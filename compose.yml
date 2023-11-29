@@ -1,0 +1,34 @@
+version: "3.8"
+services:
+  webpage:
+    image: ${DOCKERHUB_USERNAME}/${PROJECT_NAME}-web:16.merge-f26a35e
+    ports:
+      - 80:80
+  api:
+    # build: .
+    image: ${DOCKERHUB_USERNAME}/${PROJECT_NAME}-api:main-5f51c78
+    secrets:
+      - source: node-env
+        target: /app/.env
+    ports:
+      - 8080:8080
+  deployer:
+    image: cloudiana/compose-deployment:0.0.5
+    ports:
+      - 3000:3000
+    environment:
+      - CD_HOST_COMPOSE_WORKING_DIR=${PRODUCTION_DIR}
+      - CD_DEPLOY_INTERVAL_SECONDS=60
+    env_file:
+      - .env.prod
+    volumes:
+      - .env.prod:${PRODUCTION_DIR}/.env.prod
+      - ./compose.yml:/bin/compose.yml
+      - /var/run/docker.sock:/var/run/docker.sock
+    secrets:
+      - pubkey
+secrets:
+  node-env:
+    file: secrets/node-env.txt
+  pubkey:
+    file: cd_public.pem

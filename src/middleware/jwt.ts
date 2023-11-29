@@ -20,6 +20,8 @@ export default class JWTMiddleware {
         return res.status(401).json({});
       }
 
+      console.log(token);
+
       const { userId } = verify(token, JWT_SECRET) as JwtPayload;
 
       console.log(`Found user id in JWT token: ${userId}`);
