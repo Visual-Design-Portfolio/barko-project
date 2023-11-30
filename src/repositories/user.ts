@@ -1,11 +1,4 @@
-import { string } from "yup";
-import {
-  IFindEmailForLogin,
-  IFindUser,
-  IUserExtended,
-  IUserInfo,
-  IUserRepository,
-} from ".";
+import { IFindEmailForLogin, IUserInfo, IUserRepository } from ".";
 import User, { IUser, IUserModel } from "../schemas/user_info";
 import { Types } from "mongoose";
 
@@ -25,25 +18,16 @@ export default class UserRepository implements IUserRepository {
 
   public findByEmail: IUserRepository["findByEmail"] = async (email) => {
     return await this.User.findOne({ email })
-      .select("-registerdAt")
+      .select("-registerdAt, -password")
       .lean<IFindEmailForLogin>()
       .exec();
   };
 
   public findById: IUserRepository["findById"] = async (_id) => {
-    return await this.User.findById(_id)
-      .select("-registerdAt")
-      .populate("portfolios", "portfolio")
-      .lean<IFindUser>()
+    return await this.User.findById({ _id })
+      .select("-registerdAt, -password")
+      .lean<IUserInfo>()
       .exec();
-  };
-
-  public findByUser: IUserRepository["findByUser"] = async (userId) => {
-    const user = await this.User.findById(userId)
-      .select("-registeredAt")
-      .lean<IFindUser>()
-      .exec();
-    return user;
   };
 
   public updatePortfolio: IUserRepository["updatePortfolio"] = async (
