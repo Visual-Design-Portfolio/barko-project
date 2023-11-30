@@ -1,16 +1,15 @@
 import { RequestHandler } from "express";
-import { ICreateUserDTO, IUserDTO } from "../dto/user";
-import { IErrorDTO } from "../dto/error";
+import mongoose from "mongoose";
 import { ICredentialDTO, ILoginDTO } from "../dto/auth";
+import { IErrorDTO } from "../dto/error";
 import { IMessageDTO } from "../dto/message";
-import { AuthStatus } from "../middleware/jwt";
 import {
   ICreatePortfolioDTO,
   IPortfolioDTO,
   IUpdatePortfolioDTO,
 } from "../dto/portfolio";
-import mongoose from "mongoose";
-import { IPortfolio } from "../schemas/portfolio_info";
+import { ICreateUserDTO, IUserDTO } from "../dto/user";
+import { AuthStatus } from "../middleware/jwt";
 
 export interface ID {
   _id: mongoose.Types.ObjectId;
@@ -35,6 +34,13 @@ export interface IUserHandler {
     { userId: string },
     AuthStatus
   >;
+  whoami: RequestHandler<
+    {},
+    IUserDTO | IErrorDTO,
+    undefined,
+    undefined,
+    AuthStatus
+  >
 }
 
 export interface IPortfolioHandler {

@@ -1,17 +1,14 @@
 import { RequestHandler } from "express";
+import { JwtPayload, sign, verify } from "jsonwebtoken";
 import { IUserHandler } from ".";
-import { IUserRepository } from "../repositories";
+import { JWT_SECRET } from "../const";
 import { ICredentialDTO, ILoginDTO } from "../dto/auth";
 import { IErrorDTO } from "../dto/error";
+import { IMessageDTO } from "../dto/message";
 import { ICreateUserDTO, IUserDTO } from "../dto/user";
 import { AuthStatus } from "../middleware/jwt";
+import { IUserRepository } from "../repositories";
 import { hashPassword, verifyPassword } from "../utils/bcrypt";
-import { JwtPayload, sign, verify } from "jsonwebtoken";
-import { JWT_SECRET } from "../const";
-import { IMessageDTO } from "../dto/message";
-import { IPortfolioDTO } from "../dto/portfolio";
-import User, { UpdatePortfolioRequest } from "../schemas/user_info";
-import { Model } from "mongoose";
 
 export default class UserHandler implements IUserHandler {
   private repo: IUserRepository;
@@ -172,4 +169,26 @@ export default class UserHandler implements IUserHandler {
 
     const exp = decoded.exp;
   };
+  public whoami: RequestHandler<
+    {},
+    IUserDTO | IErrorDTO,
+    undefined,
+    undefined,
+    AuthStatus
+  > = async (req, res) => {
+    try {
+      const { userId } = res.locals.user
+  
+      const userInfo = await this.repo.findById(userId)
+  
+      if(userInfo === null)
+        throw new Error("User not found")
+      
+      return res.status(200).json(userInfo)
+    } catch (error) {
+      return res.status(500).json({
+        message: `${error}`
+      })
+    }
+  }
 }
