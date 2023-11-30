@@ -40,7 +40,6 @@ export interface IUserHandler {
 export interface IPortfolioHandler {
   getPortfolioAll: RequestHandler<{}, IPortfolioDTO[] | IErrorDTO>;
   getPortfolioById: RequestHandler<ID, IPortfolioDTO | IErrorDTO>;
-
   getPortfolioByUserId: RequestHandler<
     { userId: string },
     IPortfolioDTO[] | IErrorDTO,
@@ -48,7 +47,7 @@ export interface IPortfolioHandler {
     undefined,
     AuthStatus
   >;
-  
+
   create: RequestHandler<
     {},
     IPortfolioDTO | IErrorDTO,
