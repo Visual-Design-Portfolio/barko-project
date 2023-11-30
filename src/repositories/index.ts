@@ -5,6 +5,7 @@ import {
   IUpdatePortfolioDTO,
 } from "../dto/portfolio";
 import { ICreateUserDTO } from "../dto/user";
+import { IPortfolio, IPortfolioModel } from "../schemas/portfolio_info";
 import { IUser, IUserModel } from "../schemas/user_info";
 
 export interface IUserRepository {
@@ -32,6 +33,7 @@ export interface IFindEmailForLogin extends Omit<IUser, "portfolios"> {}
 export interface IPortfolioRepository {
   getPortfolioAll(): Promise<IPortfolioDTO[]>;
   getPortfolioById(_id: IGetPortfolioDTO): Promise<IPortfolioDTO | null>;
+  getPortfolioByUserId(userId: string): Promise<IPortfolioDTO[]>;
   create(
     ownerId: string,
     portfolio: ICreatePortfolioDTO

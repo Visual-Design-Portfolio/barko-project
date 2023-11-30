@@ -46,6 +46,11 @@ portfolioRouter.get(
   portfolioHandler.getPortfolioAll
 );
 portfolioRouter.get("/:_id", portfolioHandler.getPortfolioById);
+portfolioRouter.get(
+  "/portfolios/:userId",
+  jwtMiddleware.auth,
+  portfolioHandler.getPortfolioByUserId
+);
 portfolioRouter.post("/", jwtMiddleware.auth, portfolioHandler.create);
 portfolioRouter.patch("/:_id", jwtMiddleware.auth, portfolioHandler.update);
 portfolioRouter.delete("/:_id", jwtMiddleware.auth, portfolioHandler.delete);
