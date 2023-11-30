@@ -1,17 +1,15 @@
-import "dotenv/config";
 import cors from "cors";
-import JWTMiddleware from "./middleware/jwt";
+import "dotenv/config";
 import express from "express";
-import mongoose, { connect } from "mongoose";
 import { IPortfolioHandler, IUserHandler } from "./handlers";
-import ConnectDB from "./utils/connectdb";
-import UserHandler from "./handlers/user";
-import User from "./schemas/user_info";
-import { DATABASE_URL } from "./const";
-import PortfolioRepository from "./repositories/portfolio";
-import Portfolio from "./schemas/portfolio_info";
-import UserRepository from "./repositories/user";
 import PortfolioHandler from "./handlers/portfolio";
+import UserHandler from "./handlers/user";
+import JWTMiddleware from "./middleware/jwt";
+import PortfolioRepository from "./repositories/portfolio";
+import UserRepository from "./repositories/user";
+import Portfolio from "./schemas/portfolio_info";
+import User from "./schemas/user_info";
+import ConnectDB from "./utils/connectdb";
 
 const port = Number(process.env.PORT || 8888);
 const app = express();
@@ -59,6 +57,7 @@ portfolioRouter.delete("/:_id", jwtMiddleware.auth, portfolioHandler.delete);
 const authRouter = express.Router();
 app.use("/auth", authRouter);
 authRouter.post("/login", userHandler.login);
+authRouter.get("/me", jwtMiddleware.auth, userHandler.whoami)
 
 ConnectDB()
   .then(() => {
