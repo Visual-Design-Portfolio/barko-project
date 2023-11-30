@@ -46,6 +46,30 @@ export default class PortfolioHandler implements IPortfolioHandler {
       }
     };
 
+  public getPortfolioByUserId: RequestHandler<
+    { userId: string },
+    IPortfolioDTO[] | IErrorDTO,
+    undefined,
+    undefined,
+    AuthStatus
+  > = async (req, res) => {
+    const userIdFromToken = res.locals.user.userId;
+    const userIdParams = req.params.userId;
+    if (userIdFromToken !== userIdParams) {
+      return res.status(403).json({ message: "Forbidden" }).end();
+    }
+
+    try {
+      const result = await this.repo.getPortfolioByUserId(req.params.userId);
+      if (result === null) throw new Error("Not found portfolio ID");
+
+      return res.status(200).json(result).end();
+    } catch (error) {
+      console.error(error);
+      return res.status(404).json({ message: "Portfolio not found" }).end();
+    }
+  };
+
   public create: RequestHandler<
     {},
     IPortfolioDTO | IErrorDTO,

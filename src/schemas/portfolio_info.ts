@@ -82,16 +82,14 @@ const portfolioSchma = new mongoose.Schema<IPortfolio>({
     },
   ],
   skill: [String],
-  userId: [
-    {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
-      required: true,
-    },
-  ],
+  userId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User",
+    required: true,
+  },
 });
 
-const Portfolio = mongoose.model("Portfolio", portfolioSchma);
+const Portfolio = mongoose.model<IPortfolio>("Portfolio", portfolioSchma);
 
 export default Portfolio;
 export type IPortfolioModel = typeof Portfolio;

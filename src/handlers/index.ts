@@ -10,6 +10,7 @@ import {
   IUpdatePortfolioDTO,
 } from "../dto/portfolio";
 import mongoose from "mongoose";
+import { IPortfolio } from "../schemas/portfolio_info";
 
 export interface ID {
   _id: mongoose.Types.ObjectId;
@@ -39,6 +40,15 @@ export interface IUserHandler {
 export interface IPortfolioHandler {
   getPortfolioAll: RequestHandler<{}, IPortfolioDTO[] | IErrorDTO>;
   getPortfolioById: RequestHandler<ID, IPortfolioDTO | IErrorDTO>;
+
+  getPortfolioByUserId: RequestHandler<
+    { userId: string },
+    IPortfolioDTO[] | IErrorDTO,
+    undefined,
+    undefined,
+    AuthStatus
+  >;
+  
   create: RequestHandler<
     {},
     IPortfolioDTO | IErrorDTO,

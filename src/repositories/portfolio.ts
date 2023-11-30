@@ -26,6 +26,18 @@ export default class PortfolioRepository implements IPortfolioRepository {
     return result;
   };
 
+  public getPortfolioByUserId: IPortfolioRepository["getPortfolioByUserId"] =
+    async (userId) => {
+      const result = await this.Portfolio.find({ userId })
+        .lean<IPortfolioDTO[]>()
+        .exec();
+      if (!result) {
+        throw new Error("Portfolio not found");
+      }
+
+      return result;
+    };
+
   public create: IPortfolioRepository["create"] = async (_id, portfolio) => {
     return await this.Portfolio.create({
       name: portfolio.name,
