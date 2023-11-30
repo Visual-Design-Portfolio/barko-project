@@ -47,7 +47,7 @@ portfolioRouter.get(
 );
 portfolioRouter.get("/:_id", portfolioHandler.getPortfolioById);
 portfolioRouter.get(
-  "/portfolios/:userId",
+  "/:userId",
   jwtMiddleware.auth,
   portfolioHandler.getPortfolioByUserId
 );
