@@ -35,26 +35,12 @@ export interface IUserHandler {
     { userId: string },
     AuthStatus
   >;
-
-  // findUserWithPortfolios: RequestHandler<
-  //   { portfolios: string },
-  //   IUserDTO | IErrorDTO,
-  //   undefined,
-  //   undefined,
-  //   AuthStatus
-  // >;
 }
 
 export interface IPortfolioHandler {
   getPortfolioAll: RequestHandler<{}, IPortfolioDTO[] | IErrorDTO>;
   getPortfolioById: RequestHandler<ID, IPortfolioDTO | IErrorDTO>;
-  // getPortfolioWithUser: RequestHandler<
-  //   { userId: string },
-  //   IPortfolioDTO | IErrorDTO,
-  //   undefined,
-  //   undefined,
-  //   AuthStatus
-  // >;
+
   getPortfolioByUserId: RequestHandler<
     { userId: string },
     IPortfolioDTO[] | IErrorDTO,
@@ -62,6 +48,7 @@ export interface IPortfolioHandler {
     undefined,
     AuthStatus
   >;
+  
   create: RequestHandler<
     {},
     IPortfolioDTO | IErrorDTO,
