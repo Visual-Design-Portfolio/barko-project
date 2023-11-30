@@ -18,7 +18,7 @@ export default class UserRepository implements IUserRepository {
 
   public findByEmail: IUserRepository["findByEmail"] = async (email) => {
     return await this.User.findOne({ email })
-      .select("-registerdAt, -password")
+      .select("-registerdAt")
       .lean<IFindEmailForLogin>()
       .exec();
   };

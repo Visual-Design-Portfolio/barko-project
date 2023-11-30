@@ -32,8 +32,6 @@ export default class UserHandler implements IUserHandler {
           })
           .end();
       } catch (error) {
-        console.error(error);
-
         return res.status(404).json({ message: "ID not found" });
       }
     };
@@ -54,8 +52,6 @@ export default class UserHandler implements IUserHandler {
           })
           .end();
       } catch (error) {
-        console.error(error);
-
         return res.status(404).json({ message: "User not found" });
       }
     };
@@ -75,7 +71,6 @@ export default class UserHandler implements IUserHandler {
 
       return res.status(200).json({ message: "Done" }).end();
     } catch (error) {
-      console.error(error);
       return res.status(404).json({ message: "ID not found" });
     }
   };
@@ -180,18 +175,17 @@ export default class UserHandler implements IUserHandler {
     AuthStatus
   > = async (req, res) => {
     try {
-      const { userId } = res.locals.user
-  
-      const userInfo = await this.repo.findById(userId)
-  
-      if(userInfo === null)
-        throw new Error("User not found")
-      
-      return res.status(200).json(userInfo)
+      const { userId } = res.locals.user;
+
+      const userInfo = await this.repo.findById(userId);
+
+      if (userInfo === null) throw new Error("User not found");
+
+      return res.status(200).json(userInfo);
     } catch (error) {
       return res.status(500).json({
-        message: `${error}`
-      })
+        message: `${error}`,
+      });
     }
-  }
+  };
 }
