@@ -21,13 +21,7 @@ export interface IUserHandler {
   login: RequestHandler<{}, ICredentialDTO | IErrorDTO, ILoginDTO>;
   logout: RequestHandler<{}, IMessageDTO, undefined, undefined, AuthStatus>;
   findByEmail: RequestHandler<{ email: string }, IUserDTO | IErrorDTO>;
-  findById: RequestHandler<
-    { _id: string },
-    IUserDTO | IErrorDTO,
-    undefined,
-    undefined,
-    AuthStatus
-  >;
+  findById: RequestHandler<{ _id: string }, IUserDTO | IErrorDTO>;
   updatePortfolio: RequestHandler<
     { userId: string; portfolioId: string },
     IUserDTO | IErrorDTO,

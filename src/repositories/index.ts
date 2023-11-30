@@ -11,8 +11,7 @@ import { IUser, IUserModel } from "../schemas/user_info";
 export interface IUserRepository {
   create(user: ICreateUserDTO): Promise<ICreateUser>;
   findByEmail(email: string): Promise<IFindEmailForLogin | null>;
-  findById(_id: string): Promise<IFindUser | null>;
-  findByUser(userId: string): Promise<IUserInfo | null>;
+  findById(_id: string): Promise<IUserInfo | null>;
   updatePortfolio(
     userId: string,
     portfolioId: string
@@ -27,7 +26,6 @@ export interface IUserExtended
 
 export interface IUserInfo extends Omit<IUser, "password"> {}
 export interface ICreateUser extends Omit<IUser, "id" | "registerdAt"> {}
-export interface IFindUser extends Omit<IUser, "password"> {}
 export interface IFindEmailForLogin extends Omit<IUser, "portfolios"> {}
 
 export interface IPortfolioRepository {

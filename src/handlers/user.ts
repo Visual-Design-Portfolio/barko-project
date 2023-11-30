@@ -19,24 +19,27 @@ export default class UserHandler implements IUserHandler {
     this.repo = repo;
   }
 
-  public findById: RequestHandler<
-    {},
-    IUserDTO | IErrorDTO,
-    unknown,
-    undefined,
-    AuthStatus
-  > = async (req, res) => {
-    try {
-      const result = await this.repo.findById(res.locals.user.userId);
-      if (result == null) throw new Error("Not found ID");
+  public findById: RequestHandler<{ _id: string }, IUserDTO | IErrorDTO> =
+    async (req, res) => {
+      try {
+        const result = await this.repo.findById(req.params._id);
+        if (result == null) throw new Error("Not found ID");
 
-      return res.status(200).json({ message: "Done" }).end();
-    } catch (error) {
-      console.error(error);
+        return res
+          .status(200)
+          .json({
+            _id: result._id,
+            email: result.email,
+            username: result.username,
+            registeredAt: result.registeredAt,
+          })
+          .end();
+      } catch (error) {
+        console.error(error);
 
-      return res.status(404).json({ message: "ID not found" });
-    }
-  };
+        return res.status(404).json({ message: "ID not found" });
+      }
+    };
 
   public findByEmail: RequestHandler<{ email: string }, IUserDTO | IErrorDTO> =
     async (req, res) => {
